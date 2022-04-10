@@ -133,6 +133,38 @@
           $users[$i] = $row['users'];
         }
       }
+
+      //SQL for Pie Chart
+      $piesql = "SELECT * FROM `piechart`";
+      $pieresult = mysqli_query($conn, $piesql);
+
+      //Find the number of records returned
+      $pienum = mysqli_num_rows($pieresult);
+
+      //Saving data from database to php arrays
+      if($pienum>0){
+        for ($pielabels=array(), $hours=array(), $i=0; $row =mysqli_fetch_assoc($pieresult); $i++)
+        {
+          $pielabels[$i] = $row['task'];
+          $hours[$i] = $row['hours'];
+        }
+      }
+
+      //SQL for Bar Chart
+      $barsql = "SELECT * FROM `barchart`";
+      $barresult = mysqli_query($conn, $barsql);
+
+      //Find the number of records returned
+      $barnum = mysqli_num_rows($barresult);
+
+      //Saving data from database to php arrays
+      if($barnum>0){
+        for ($barlabels=array(), $profit=array(), $i=0; $row =mysqli_fetch_assoc($barresult); $i++)
+        {
+          $barlabels[$i] = $row['year'];
+          $profit[$i] = $row['yearly_profit'];
+        }
+      }
     }
 ?>
     <!-- Content Wrapper. Contains page content -->
@@ -503,42 +535,67 @@
         //-------------
         //- PIE CHART -
         //-------------
+
+        // Converting PHP arrays to JavaScript variables
+        var pielabels = <?php echo json_encode($pielabels); ?>;
+        var hoursdata = <?php echo json_encode($hours); ?>;
+
         // Get context with jQuery - using jQuery's .get() method.
-        // var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-        // var pieData        = donutData;
-        // var pieOptions     = {
-        //   maintainAspectRatio : false,
-        //   responsive : true,
-        // }
-        // //Create pie or douhnut chart
-        // // You can switch between pie and douhnut using the method below.
-        // new Chart(pieChartCanvas, {
-        //   type: 'pie',
-        //   data: pieData,
-        //   options: pieOptions
-        // })
+        var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+        var pieData        = {
+            labels: pielabels,
+            datasets: [{
+                data: hoursdata,
+                backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#17a2b8',
+                    '#6f42c1', '#e83e8c'
+                ]
+            }]
+        }
+        var pieOptions     = {
+          maintainAspectRatio : false,
+          responsive : true,
+        }
+        
+        new Chart(pieChartCanvas, {
+          type: 'pie',
+          data: pieData,
+          options: pieOptions
+        })
 
         //-------------
         //- BAR CHART -
         //-------------
-        // var barChartCanvas = $('#barChart').get(0).getContext('2d')
-        // var barChartData = $.extend(true, {}, areaChartData)
-        // var temp0 = areaChartData.datasets[0]
-        // var temp1 = areaChartData.datasets[1]
-        // barChartData.datasets[0] = temp1
-        // barChartData.datasets[1] = temp0
 
-        // var barChartOptions = {
-        //     responsive: true,
-        //     maintainAspectRatio: false,
-        //     datasetFill: false
-        // }
+        // Converting PHP arrays to JavaScript variables
+        var barlabels = <?php echo json_encode($barlabels); ?>;
+        var profitdata = <?php echo json_encode($profit); ?>;
+        
+        // Get context with jQuery - using jQuery's .get() method.
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var BarChartData = {
+            labels: barlabels,
+            datasets: [{
+                    label: "Company's Yearly Profit",
+                    borderColor: '#00cdff',
+                    backgroundColor: '#97d9e970',
+                    data: profitdata,
+                    borderWidth: 2
+                }
+            ]
+        }
 
-        // new Chart(barChartCanvas, {
-        //     type: 'bar',
-        //     data: barChartData,
-        //     options: barChartOptions
-        // })
+        new Chart(barChartCanvas, {
+          type: 'bar',
+          data: BarChartData,
+          options: {
+            scales: {
+                y: {
+                    min: 0,
+                    max: 70,
+                }
+            }
+          },
+        })
 
         //---------------------
         //- STACKED BAR CHART -
