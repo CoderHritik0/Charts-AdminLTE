@@ -34,15 +34,15 @@
       $areasql = "SELECT * FROM `areachart`";
       $arearesult = mysqli_query($conn, $areasql);
 
-      //Find the number of records returned
+      //Find the number of records returned from table
       $areanum = mysqli_num_rows($arearesult);
 
       //Saving data from database to php arrays
       if($areanum>0){
         for ($arealabels=array(), $ice=array(), $i=0; $row =mysqli_fetch_assoc($arearesult); $i++)
         {
-          $arealabels[$i] = $row['day'];
-          $ice[$i] = $row['icecream'];
+          $arealabels[$i] = $row['day']; //arealabel=[Sunday,Monday,...,Saturday]
+          $ice[$i] = $row['icecream']; //ice=[36,15,....,30]
         }
       }
       
@@ -400,20 +400,21 @@
         // Converting PHP arrays to JavaScript variables
         var arealabels = <?php echo json_encode($arealabels); ?>;
         var areadata = <?php echo json_encode($ice); ?>;
-        
+
         // Get context with jQuery - using jQuery's .get() method.+
         var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
 
+        // Entering Necessary Data into Single JavaScript Variable areaChartData
         var areaChartData = {
             labels: arealabels,
             datasets: [{
-                label: 'Ice-cream Sales Report',
                 backgroundColor: 'rgba(60,141,188,0.9)',
                 pointColor: '#5caede',
                 data: areadata
             }]
         }
 
+        // Entering Extra Data for Customization of chart
         var areaChartOptions = {
             maintainAspectRatio: false,
             responsive: true,
@@ -435,6 +436,7 @@
         }
 
         // This will get the first returned node in the jQuery collection.
+        // Passing Data to Canvas through JavaScript Variables define above
         new Chart(areaChartCanvas, {
             type: 'line',
             data: areaChartData,
@@ -453,6 +455,8 @@
 
         // Get context with jQuery - using jQuery's .get() method.+
         var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+
+        // Entering Necessary Data into Single JavaScript Variable lineChartData
         var lineChartData = {
             labels: linelabels,
             datasets: [{
@@ -475,6 +479,8 @@
                 }
             ]
         }
+        
+        // Entering Extra Data for Customization of chart
         var lineChartOptions = {
             maintainAspectRatio: false,
             responsive: true,
@@ -495,6 +501,7 @@
             }
         }
 
+        // Passing Data to Canvas through JavaScript Variables define above
         var lineChart = new Chart(lineChartCanvas, {
             type: 'line',
             data: lineChartData,
@@ -511,6 +518,8 @@
 
         // Get context with jQuery - using jQuery's .get() method.
         var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+        
+        // Entering Necessary Data into Single JavaScript Variable donutData
         var donutData = {
             labels: doughnutlabels,
             datasets: [{
@@ -520,12 +529,14 @@
                 ]
             }]
         }
+        
+        // Entering Extra Data for Customization of chart
         var donutOptions = {
             maintainAspectRatio: false,
             responsive: true,
         }
 
-
+        // Passing Data to Canvas through JavaScript Variables define above
         new Chart(donutChartCanvas, {
             type: 'doughnut',
             data: donutData,
@@ -542,7 +553,9 @@
 
         // Get context with jQuery - using jQuery's .get() method.
         var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-        var pieData        = {
+        
+        // Entering Necessary Data into Single JavaScript Variable pieData
+        var pieData = {
             labels: pielabels,
             datasets: [{
                 data: hoursdata,
@@ -551,15 +564,18 @@
                 ]
             }]
         }
-        var pieOptions     = {
-          maintainAspectRatio : false,
-          responsive : true,
-        }
         
+        // Entering Extra Data for Customization of chart
+        var pieOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+
+        // Passing Data to Canvas through JavaScript Variables define above
         new Chart(pieChartCanvas, {
-          type: 'pie',
-          data: pieData,
-          options: pieOptions
+            type: 'pie',
+            data: pieData,
+            options: pieOptions
         })
 
         //-------------
@@ -569,32 +585,36 @@
         // Converting PHP arrays to JavaScript variables
         var barlabels = <?php echo json_encode($barlabels); ?>;
         var profitdata = <?php echo json_encode($profit); ?>;
-        
+
         // Get context with jQuery - using jQuery's .get() method.
         var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        
+        // Entering Necessary Data into Single JavaScript Variable barChartData
         var BarChartData = {
             labels: barlabels,
             datasets: [{
-                    label: "Company's Yearly Profit",
-                    borderColor: '#00cdff',
-                    backgroundColor: '#97d9e970',
-                    data: profitdata,
-                    borderWidth: 2
-                }
-            ]
+                label: "Company's Yearly Profit",
+                borderColor: '#00cdff',
+                backgroundColor: '#97d9e970',
+                data: profitdata,
+                borderWidth: 2
+            }]
         }
 
+        // Passing Data to Canvas through JavaScript Variables define above
         new Chart(barChartCanvas, {
-          type: 'bar',
-          data: BarChartData,
-          options: {
-            scales: {
-                y: {
-                    min: 0,
-                    max: 70,
+            type: 'bar',
+            data: BarChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 70,
+                    }
                 }
-            }
-          },
+            },
         })
 
         //---------------------
@@ -611,6 +631,8 @@
 
         // Get context with jQuery - using jQuery's .get() method.
         var stackedBarChartCanvas = $('#stackedBarChart').get(0).getContext('2d')
+        
+        // Entering Necessary Data into Single JavaScript Variable stackedBarChartData
         var stackedBarChartData = {
             labels: stackedbarlabels,
             datasets: [{
@@ -641,6 +663,7 @@
             ]
         }
 
+        // Entering Extra Data for Customization of chart
         var stackedBarChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
@@ -654,6 +677,7 @@
             }
         }
 
+        // Passing Data to Canvas through JavaScript Variables define above
         new Chart(stackedBarChartCanvas, {
             type: 'bar',
             data: stackedBarChartData,
@@ -672,6 +696,8 @@
 
         // Get context with jQuery - using jQuery's .get() method.
         var radarChartCanvas = $('#radarChart').get(0).getContext('2d')
+        
+        // Entering Necessary Data into Single JavaScript Variable radarChartData
         var radarChartData = {
             labels: radarlabels,
             datasets: [{
@@ -695,6 +721,7 @@
             ]
         }
 
+        // Passing Data to Canvas through JavaScript Variables define above
         new Chart(radarChartCanvas, {
             type: 'radar',
             data: radarChartData,
@@ -717,6 +744,8 @@
 
         // Get context with jQuery - using jQuery's .get() method.
         var polarChartCanvas = $('#polarChart').get(0).getContext('2d')
+        
+        // Entering Necessary Data into Single JavaScript Variable polarChartData
         var polarChartData = {
             labels: polarlabels,
             datasets: [{
@@ -727,6 +756,7 @@
             }]
         }
 
+        // Passing Data to Canvas through JavaScript Variables define above
         new Chart(polarChartCanvas, {
             type: 'polarArea',
             data: polarChartData
